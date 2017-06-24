@@ -1,12 +1,4 @@
-ww
-====
-
-unified promise and thunk with callback async library
-
-## Quick Example
-
-```js
-const ww = require('ww');
+const ww = require('../ww');
 
 ww(function *() {
 	// wait examples
@@ -77,4 +69,3 @@ ww(function *() {
 			val => console.log('object1-9', val),
 			err => console.error(err));
 })();
-```

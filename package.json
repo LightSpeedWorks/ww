@@ -1,8 +1,8 @@
 {
   "name": "ww",
-  "version": "0.0.0",
-  "description": "test",
-  "main": "index.js",
+  "version": "0.0.1",
+  "description": "ww - unified promise and thunk with callback async library",
+  "main": "ww.js",
   "dependencies": {},
   "devDependencies": {},
   "keywords": [
