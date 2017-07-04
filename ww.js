@@ -32,7 +32,7 @@ var ww = function () {
 				return wait.apply(null, arguments);
 
 			if (typeof setup.next === 'function')
-				return gtorcb(setup, cb);
+				return wwGtor(setup, cb);
 
 			if (typeof setup.then === 'function')
 				return ww(function (res, rej) { setup.then(res, rej); }, cb);
@@ -57,7 +57,7 @@ var ww = function () {
 				var r = setup(last, last);
 
 				if (r != null && typeof r.next === 'function')
-					return gtorcb(r, cb);
+					return wwGtor(r, cb);
 
 				if (r != null && typeof r.then === 'function')
 					return ww(function (res, rej) { r.then(res, rej); }, cb);
@@ -93,7 +93,7 @@ var ww = function () {
 				var r = setup(callback, callback);
 
 				if (r != null && typeof r.next === 'function')
-					return gtorcb(r, cb);
+					return wwGtor(r, cb);
 
 				if (r != null && typeof r.then === 'function')
 					return ww(function (res, rej) { r.then(res, rej); }, cb);
@@ -109,7 +109,7 @@ var ww = function () {
 					var r = setup(callback, callback);
 
 					if (r != null && typeof r.next === 'function')
-						gtorcb(r, callback);
+						wwGtor(r, callback);
 
 					if (r != null && typeof r.then === 'function')
 						ww(function (res, rej) { r.then(res, rej); }, callback);
@@ -155,8 +155,8 @@ var ww = function () {
 		}, cb);
 	} // wait
 
-	// *** gtorcb
-	function gtorcb(gtor, cb) {
+	// *** wwGtor
+	function wwGtor(gtor, cb) {
 
 		if (typeof gtor === 'function') gtor = gtor();
 
@@ -181,7 +181,7 @@ var ww = function () {
 				else next(null, val);
 			} // next
 		}, cb);
-	} // gtorcb
+	} // wwGtor
 
 	// *** resolve
 	function resolve(val, cb) {
@@ -239,13 +239,16 @@ var ww = function () {
 		if (num <= 0)
 			throw new RangeError('number of parallel must be a positive number');
 
-		var resolves = [];
+		var resolves = [], fired = false, elem;
 
 		return function sync(val) {
 			return ww(function (res, rej) {
 				resolves.push({res: res, val: val});
-				if (resolves.length >= num)
-					resolves.forEach(elem => (elem.res)(elem.val));
+				if (fired || resolves.length >= num) {
+					fired = true;
+					while (elem = resolves.shift())
+						(elem.res)(elem.val);
+				}
 			});
 		} // sync
 	} // makeSync
