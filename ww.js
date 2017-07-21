@@ -3,7 +3,7 @@ var ww = function () {
 
 	var nextTickTasks = [], nextTickProgress = false;
 
-	var cc = 1;
+	var nextTickCount = 0;
 
 	var nextTickDo =
 		typeof Promise === 'function' && typeof Promise.resolve === 'function' ?
@@ -258,8 +258,9 @@ var ww = function () {
 		nextTickTasks.push(fn);
 		if (nextTickProgress) return;
 		nextTickProgress = true;
-		if (--cc >= 0) return cc = 100, nextTickExecutor();
-		// console.log('@@@' + cc + new Error().stack.split('\n').slice(2).filter(x=>x.indexOf('ww')>0).join('\n'));
+		if (--nextTickCount >= 0) return nextTickExecutor();
+		// console.log('@@@' + nextTickCount + new Error().stack.split('\n').slice(2).filter(x=>x.indexOf('ww')>0).join('\n'));
+		nextTickCount = 100;
 		nextTickDo(nextTickExecutor);
 	} // nextTick
 
